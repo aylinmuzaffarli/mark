@@ -803,44 +803,34 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
       render();
     }
+function loadCards() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
 
-    function loadCards() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return seedCards();
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return seedCards();
-        return parsed;
-      } catch {
-        return seedCards();
-      }
+    // If nothing is saved yet,
+    // return an empty array
+    if (!raw) {
+      return [];
     }
 
-    function seedCards() {
-      const demo = [
-        {
-          id: uid(),
-          title: "SAT Math — Practice Set 1",
-          position: "Stopped at question 17",
-          progress: null,
-          tags: ["SAT", "Math"],
-          notes: "Review exponent rules and slow down on multi-step word problems.",
-          updatedAt: new Date().toISOString()
-        },
-        {
-          id: uid(),
-          title: "MIT Chemistry — Lecture 4",
-          position: "Paused at 32:10",
-          progress: null,
-          tags: ["Chemistry", "MIT"],
-          notes: "Need to revisit equilibrium and make a mini summary after the lecture.",
-          updatedAt: new Date().toISOString()
-        }
-      ];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
-      return demo;
+    const parsed = JSON.parse(raw);
+
+    // If saved data is broken,
+    // also return empty array
+    if (!Array.isArray(parsed)) {
+      return [];
     }
 
+    return parsed;
+
+  } catch {
+    // If JSON crashes or fails
+    return [];
+  }
+}
+
+
+   
     function formatDate(iso) {
       const d = new Date(iso);
       return d.toLocaleString([], {
