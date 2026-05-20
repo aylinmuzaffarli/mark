@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/png" href="mark-logo.png">
+  <title>mark</title>
+  <style>
+    :root {
+      --bg: #ece8e3;
+      --bg-2: #e4dfd8;
+      --bg-3: #dfe3e5;
+
+      --panel: rgba(245, 242, 238, 0.86);
+      --panel-strong: #f4f1ec;
+
+      --text: #151515;
+      --muted: #6a7178;
+
+      --border: rgba(198, 205, 210, 0.95);
+
+      --accent: #4a5560;
+      --accent-soft: rgba(74, 85, 96, 0.08);
+      --mark: rgba(216, 202, 188, 0.62);
+
+      --danger: #b46c6c;
+
+      --shadow: 0 26px 60px rgba(18, 23, 28, 0.12);
+      --shadow-soft: 0 12px 26px rgba(18, 23, 28, 0.06);
+
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.35), transparent 18%),
+        radial-gradient(circle at 88% 10%, rgba(205, 210, 214, 0.35), transparent 18%),
+        radial-gradient(circle at 80% 84%, rgba(188, 196, 200, 0.28), transparent 22%),
+        linear-gradient(180deg, var(--bg), var(--bg-2) 55%, var(--bg-3));
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+      opacity: 0.42;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 112px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      background: linear-gradient(145deg, rgba(245,242,238,0.96), rgba(232,228,222,0.94));
+      border: 1px solid rgba(198,205,210,0.88);
+      border-radius: 34px;
+      box-shadow:
+        22px 22px 48px rgba(190,190,190,0.15),
+        -16px -16px 38px rgba(255,255,255,0.72),
+        inset 1px 1px 0 rgba(255,255,255,0.75);
+      backdrop-filter: blur(18px);
+      margin-bottom: 18px;
+      padding: 26px 26px 24px;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .header:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        28px 28px 56px rgba(190,190,190,0.17),
+        -18px -18px 40px rgba(255,255,255,0.80),
+        inset 1px 1px 0 rgba(255,255,255,0.78);
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+      font-weight: 860;
+    }
+
+    .title-block p {
+      margin: 10px 0 0;
+      max-width: 860px;
+      color: var(--muted);
+      line-height: 1.68;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+      margin: 18px 0 16px;
+    }
+
+    .search {
+      flex: 1 1 420px;
+      position: relative;
+      min-width: 0;
+    }
+
+    .search input {
+      width: 100%;
+      min-width: 0;
+      height: 62px;
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding-left: 22px;
+      padding-right: 22px;
+      font-size: 15px;
+      color: #40464d;
+      background: linear-gradient(145deg, rgba(245,242,238,0.98), rgba(232,228,222,0.94));
+      box-shadow:
+        10px 10px 24px rgba(180,180,180,0.16),
+        -10px -10px 24px rgba(255,255,255,0.65),
+        inset 1px 1px 0 rgba(255,255,255,0.78);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .search input::placeholder {
+      color: #8a9096;
+      font-size: 14px;
+      opacity: 1;
+    }
+
+    .search input:focus {
+      transform: translateY(-1px);
+      box-shadow:
+        14px 14px 30px rgba(180,180,180,0.18),
+        -12px -12px 28px rgba(255,255,255,0.78),
+        inset 1px 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 22px;
+      padding: 15px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      color: #50555c;
+      background: linear-gradient(145deg, rgba(245,242,238,0.98), rgba(230,226,220,0.96));
+      box-shadow:
+        10px 10px 22px rgba(180,180,180,0.18),
+        -8px -8px 20px rgba(255,255,255,0.72),
+        inset 1px 1px 0 rgba(255,255,255,0.78);
+      transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease,
+        filter .18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        14px 14px 30px rgba(180,180,180,0.20),
+        -10px -10px 24px rgba(255,255,255,0.78),
+        inset 1px 1px 0 rgba(255,255,255,0.85);
+      filter: saturate(1.02);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+      box-shadow:
+        inset 6px 6px 14px rgba(180,180,180,0.16),
+        inset -6px -6px 14px rgba(255,255,255,0.9);
+    }
+
+    .btn.primary {
+      color: #2f3439;
+      background: linear-gradient(145deg, #f3f0ec, #e8e4de);
+      border: 1px solid rgba(198, 205, 210, 0.95);
+    }
+
+    .btn.ghost {
+      background: linear-gradient(145deg, rgba(245,242,238,0.98), rgba(233,229,223,0.92));
+      border: 1px solid rgba(198, 205, 210, 0.95);
+    }
+
+    .btn.danger {
+      color: #9d5c5c;
+      background: linear-gradient(145deg, rgba(251,245,245,0.96), rgba(240,231,231,0.92));
+      border: 1px solid rgba(180, 108, 108, 0.20);
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 8px 0 18px;
+    }
+
+    .stat {
+      background: rgba(245,242,238,0.90);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 14px;
+      color: var(--muted);
+      font-size: 14px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      perspective: 1200px;
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(246,243,239,0.96), rgba(236,232,226,0.92)),
+        linear-gradient(135deg, rgba(255,255,255,0.30), rgba(0,0,0,0.01));
+      border: 1px solid rgba(198, 205, 210, 0.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+      backdrop-filter: blur(12px);
+      transform-style: preserve-3d;
+      transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.28), transparent 34%),
+        linear-gradient(180deg, rgba(74,85,96,0.02), transparent 56%);
+      pointer-events: none;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      right: -22px;
+      top: -22px;
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle, rgba(145, 163, 176, 0.15), transparent 68%);
+      pointer-events: none;
+      filter: blur(1px);
+    }
+
+    .card:hover {
+      transform: translateY(-7px) rotateX(1deg) rotateY(-1deg);
+      box-shadow: 0 30px 64px rgba(12, 18, 24, 0.16);
+      border-color: rgba(207,214,221,0.98);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: var(--accent-soft);
+      color: #49545f;
+      border: 1px solid rgba(74,85,96,0.12);
+    }
+
+    .progress-wrap {
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-line {
+      height: 9px;
+      background: #ecebe8;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+      border: 1px solid #e0ddd8;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #424c58, #9aa4ae);
+      border-radius: inherit;
+      width: 0%;
+      transition: width .35s ease;
+    }
+
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .snippet {
+      margin: 12px 0 0;
+      color: #394048;
+      line-height: 1.62;
+      white-space: pre-wrap;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .empty {
+      background: rgba(245,242,238,0.86);
+      border: 1px dashed #d7d5cf;
+      border-radius: 24px;
+      padding: 42px 24px;
+      text-align: center;
+      color: var(--muted);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    .empty h2 {
+      margin: 0 0 10px;
+      color: var(--text);
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .fab {
+      position: fixed;
+      right: max(18px, env(safe-area-inset-right));
+      bottom: max(18px, env(safe-area-inset-bottom));
+      width: 68px;
+      height: 68px;
+      border: none;
+      cursor: pointer;
+      font-size: 32px;
+      color: #4b5158;
+      background: linear-gradient(145deg, rgba(245,242,238,0.98), rgba(230,226,220,0.96));
+      box-shadow:
+        16px 16px 32px rgba(190,190,190,0.18),
+        -12px -12px 28px rgba(255,255,255,0.72),
+        inset 1px 1px 0 rgba(255,255,255,0.86);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      transition: transform .2s ease, box-shadow .2s ease;
+      z-index: 9999;
+    }
+
+    .fab:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        22px 22px 44px rgba(190,190,190,0.20),
+        -14px -14px 34px rgba(255,255,255,0.82);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(21, 24, 28, 0.46);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+      backdrop-filter: blur(6px);
+    }
+
+    .overlay.show { display: flex; }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(90vh, 900px);
+      overflow: auto;
+      background: var(--panel-strong);
+      border-radius: 26px;
+      box-shadow: 0 34px 86px rgba(20, 24, 28, 0.24);
+      border: 1px solid rgba(255,255,255,0.85);
+      transform-origin: center;
+      animation: popIn .2s ease-out;
+    }
+
+    .modal header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 22px 0;
+    }
+
+    .modal header h2 {
+      margin: 0;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .modal-body {
+      padding: 18px 22px 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #474b50;
+    }
+
+    input[type="text"], textarea, input[type="number"] {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 13px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      width: 100%;
+      transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(74,85,96,0.55);
+      box-shadow: 0 0 0 4px rgba(74,85,96,0.08);
+      transform: translateY(-1px);
+    }
+
+    .field-help {
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: -2px;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding: 0 22px 22px;
+      flex-wrap: wrap;
+    }
+
+    .detail {
+      white-space: pre-wrap;
+      line-height: 1.65;
+      color: #394048;
+      margin: 0;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-box {
+      background: #fafbfd;
+      border: 1px solid #e4e8ed;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .xbtn {
+      border: 0;
+      background: linear-gradient(180deg, rgba(245,242,238,0.98), rgba(233,229,223,0.92));
+      color: var(--text);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      flex: 0 0 auto;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+      box-shadow: 0 8px 16px rgba(18, 23, 28, 0.06), inset 1px 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .xbtn:hover {
+      transform: rotate(4deg) scale(1.03);
+      box-shadow: 0 10px 18px rgba(18, 23, 28, 0.08), inset 1px 1px 0 rgba(255,255,255,0.95);
+    }
+
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+
+    mark {
+      background: var(--mark);
+      color: inherit;
+      padding: 0 2px;
+      border-radius: 4px;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 920px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 18px 14px 114px;
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search {
+        width: 100%;
+        flex: 1 1 auto;
+      }
+
+      .search input {
+        height: 58px;
+        font-size: 16px;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .search input::placeholder {
+        font-size: 13px;
+      }
+
+      .toolbar .btn {
+        width: 100%;
+        min-height: 48px;
+        justify-content: center;
+      }
+
+      .form-grid { grid-template-columns: 1fr; }
+      .modal { max-height: 94vh; }
+
+      .fab {
+        width: 62px;
+        height: 62px;
+        font-size: 28px;
+        right: max(14px, env(safe-area-inset-right));
+        bottom: max(14px, env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title-block">
+        <h1>mark</h1>
+        <p>Save where you left off in any lesson, lecture, or study task — and continue from the same point.</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <input id="searchInput" type="text" placeholder="Search by course, note, tag, or stopping point..." />
+      </div>
+      <button class="btn ghost" id="clearAllBtn" title="Delete all saved cards">Clear all</button>
+      <button class="btn primary" id="addBtn">+ Add card</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat" id="countStat">0 cards saved</div>
+      <div class="stat" id="updatedStat">No recent updates yet</div>
+    </div>
+
+    <div id="emptyState" class="empty" style="display:none;">
+      <h2>Nothing saved yet</h2>
+      <p>Add your first card with the plus button. The page will remember it after refresh or reopening.</p>
+    </div>
+
+    <div id="cards" class="grid"></div>
+  </div>
+
+  
+  <div class="overlay" id="modalOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header>
+        <div>
+          <h2 id="modalTitle">Add card</h2>
+        </div>
+        <button class="xbtn" id="closeModalBtn" aria-label="Close">×</button>
+      </header>
+
+      <div class="modal-body">
+        <form id="cardForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="titleInput">Title</label>
+              <input id="titleInput" type="text" placeholder="MIT Chemistry Lecture 4" required />
+            </div>
+
+            <div class="field">
+              <label for="positionInput">Where you left off</label>
+              <input id="positionInput" type="text" placeholder="Stopped at 32:10 / question 17 / page 54" />
+            </div>
+
+            <div class="field">
+              <label for="progressInput">Progress (optional)</label>
+              <input id="progressInput" type="number" min="0" max="100" step="1" placeholder="0–100" />
+              <small id="progressHint" class="muted field-help">Enter a value between 0 and 100</small>
+            </div>
+
+            <div class="field full">
+              <label for="tagsInput">Tags (optional)</label>
+              <input id="tagsInput" type="text" placeholder="SAT, math, chemistry" />
+              <small class="muted field-help">Separate tags with commas.</small>
+            </div>
+
+            <div class="field full">
+              <label for="notesInput">Notes (optional)</label>
+              <textarea id="notesInput" placeholder="Any reminders, mistakes, or things to continue later..."></textarea>
+            </div>
+          </div>
+
+          <input type="hidden" id="cardId" />
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn ghost" id="cancelBtn" type="button">Cancel</button>
+        <button class="btn primary" id="saveBtn" type="submit" form="cardForm">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="detailOverlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <header>
+        <div>
+          <h2 id="detailTitle">Card details</h2>
+          <div id="detailSubtitle" class="muted small"></div>
+        </div>
+        <button class="xbtn" id="closeDetailBtn" aria-label="Close">×</button>
+      </header>
+
+      <div class="modal-body">
+        <div class="detail-grid">
+          <div class="detail-box">
+            <div class="detail-label">Where you left off</div>
+            <p class="detail" id="detailPosition"></p>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Progress</div>
+            <p class="detail" id="detailProgress"></p>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Tags</div>
+            <p class="detail" id="detailTags"></p>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Notes</div>
+            <p class="detail" id="detailNotes"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn danger" id="deleteFromDetailBtn" type="button">Delete</button>
+        <button class="btn ghost" id="editFromDetailBtn" type="button">Edit</button>
+        <button class="btn primary" id="closeDetailFooterBtn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "learningTrackerCards_v1";
+
+    const els = {
+      cards: document.getElementById("cards"),
+      emptyState: document.getElementById("emptyState"),
+      searchInput: document.getElementById("searchInput"),
+      countStat: document.getElementById("countStat"),
+      updatedStat: document.getElementById("updatedStat"),
+      addBtn: document.getElementById("addBtn"),
+           clearAllBtn: document.getElementById("clearAllBtn"),
+      modalOverlay: document.getElementById("modalOverlay"),
+      detailOverlay: document.getElementById("detailOverlay"),
+      closeModalBtn: document.getElementById("closeModalBtn"),
+      closeDetailBtn: document.getElementById("closeDetailBtn"),
+      closeDetailFooterBtn: document.getElementById("closeDetailFooterBtn"),
+      cancelBtn: document.getElementById("cancelBtn"),
+      cardForm: document.getElementById("cardForm"),
+      cardId: document.getElementById("cardId"),
+      titleInput: document.getElementById("titleInput"),
+      positionInput: document.getElementById("positionInput"),
+      notesInput: document.getElementById("notesInput"),
+      tagsInput: document.getElementById("tagsInput"),
+      progressInput: document.getElementById("progressInput"),
+      progressHint: document.getElementById("progressHint"),
+      modalTitle: document.getElementById("modalTitle"),
+      detailTitle: document.getElementById("detailTitle"),
+      detailSubtitle: document.getElementById("detailSubtitle"),
+      detailPosition: document.getElementById("detailPosition"),
+      detailProgress: document.getElementById("detailProgress"),
+      detailTags: document.getElementById("detailTags"),
+      detailNotes: document.getElementById("detailNotes"),
+      deleteFromDetailBtn: document.getElementById("deleteFromDetailBtn"),
+      editFromDetailBtn: document.getElementById("editFromDetailBtn"),
+    };
+
+    let cards = loadCards();
+    let currentDetailId = null;
+
+    function uid() {
+      return "c_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8);
+    }
+
+    function saveCards() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+      render();
+    }
+
+    function loadCards() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return seedCards();
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return seedCards();
+        return parsed;
+      } catch {
+        return seedCards();
+      }
+    }
+
+    function seedCards() {
+      const demo = [
+        {
+          id: uid(),
+          title: "SAT Math — Practice Set 1",
+          position: "Stopped at question 17",
+          progress: null,
+          tags: ["SAT", "Math"],
+          notes: "Review exponent rules and slow down on multi-step word problems.",
+          updatedAt: new Date().toISOString()
+        },
+        {
+          id: uid(),
+          title: "MIT Chemistry — Lecture 4",
+          position: "Paused at 32:10",
+          progress: null,
+          tags: ["Chemistry", "MIT"],
+          notes: "Need to revisit equilibrium and make a mini summary after the lecture.",
+          updatedAt: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(demo));
+      return demo;
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString([], {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function escapeRegExp(str) {
+      return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function normalize(text) {
+      return String(text || "").toLowerCase().trim();
+    }
+
+    function getSearchTerms() {
+      return normalize(els.searchInput.value)
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 8);
+    }
+
+    function highlightHtml(text, terms) {
+      const safe = escapeHtml(text || "");
+      if (!terms.length) return safe;
+
+      const pattern = terms.map(escapeRegExp).join("|");
+      if (!pattern) return safe;
+
+      const re = new RegExp(`(${pattern})`, "gi");
+      return safe.replace(re, "<mark>$1</mark>");
+    }
+
+    function filteredCards() {
+      const q = normalize(els.searchInput.value);
+      const sorted = [...cards].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+      if (!q) return sorted;
+
+      return sorted.filter(card => {
+        const hay = [
+          card.title,
+          card.position,
+          card.notes,
+          (card.tags || []).join(" "),
+          String(card.progress ?? "")
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function progressMarkup(card) {
+      if (card.progress === null || card.progress === undefined || card.progress === "") return "";
+      const progress = Number(card.progress);
+      if (!Number.isFinite(progress)) return "";
+      const safeProgress = Math.max(0, Math.min(100, progress));
+
+      return `
+        <div class="progress-wrap">
+          <div class="muted small">Progress: ${safeProgress}%</div>
+          <div class="progress-line"><div class="progress-fill" style="width:${safeProgress}%"></div></div>
+        </div>
+      `;
+    }
+
+    function setProgressHint(text, isError = false) {
+      els.progressHint.textContent = text;
+      els.progressHint.style.color = isError ? "var(--danger)" : "";
+    }
+
+    function render() {
+      const list = filteredCards();
+      const terms = getSearchTerms();
+      els.cards.innerHTML = "";
+
+      els.countStat.textContent = `${cards.length} card${cards.length === 1 ? "" : "s"} saved`;
+      const mostRecent = [...cards].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0];
+      els.updatedStat.textContent = mostRecent ? `Last updated: ${formatDate(mostRecent.updatedAt)}` : "No recent updates yet";
+
+      els.emptyState.style.display = cards.length === 0 ? "block" : "none";
+
+      if (cards.length > 0 && list.length === 0) {
+        els.cards.innerHTML = `
+          <div class="empty" style="grid-column:1/-1;">
+            <h2>No matches found</h2>
+            <p>Try a different search term.</p>
+          </div>`;
+        return;
+      }
+
+      for (const card of list) {
+        const tagHtml = (card.tags || [])
+          .filter(Boolean)
+          .slice(0, 4)
+          .map(tag => `<span class="tag">${highlightHtml(tag, terms)}</span>`)
+          .join("");
+
+        const snippet = card.notes ? card.notes : "No notes yet.";
+
+        const div = document.createElement("article");
+        div.className = "card";
+        div.innerHTML = `
+          <div class="card-top">
+            <div>
+              <h3>${highlightHtml(card.title, terms)}</h3>
+              <div class="tag-row">${tagHtml}</div>
+            </div>
+            <button class="xbtn" title="Delete" aria-label="Delete card">×</button>
+          </div>
+
+          ${progressMarkup(card)}
+
+          <div class="meta">
+            <span>${highlightHtml(card.position || "No stopping point yet", terms)}</span>
+            <span>${formatDate(card.updatedAt)}</span>
+          </div>
+
+          <div class="snippet">${highlightHtml(snippet, terms)}</div>
+
+          <div class="card-actions">
+            <button class="btn ghost view-btn" type="button">View more</button>
+            <button class="btn primary edit-btn" type="button">Edit</button>
+          </div>
+        `;
+
+        div.querySelector(".view-btn").addEventListener("click", () => openDetail(card.id));
+        div.querySelector(".edit-btn").addEventListener("click", () => openEditor(card.id));
+        div.querySelector(".xbtn").addEventListener("click", () => deleteCard(card.id));
+        els.cards.appendChild(div);
+      }
+    }
+
+    function openModal() {
+      els.modalOverlay.classList.add("show");
+      els.modalOverlay.setAttribute("aria-hidden", "false");
+      setTimeout(() => els.titleInput.focus(), 20);
+    }
+
+    function closeModal() {
+      els.modalOverlay.classList.remove("show");
+      els.modalOverlay.setAttribute("aria-hidden", "true");
+      els.cardForm.reset();
+      els.cardId.value = "";
+      setProgressHint("Enter a value between 0 and 100");
+    }
+
+    function openDetail(id) {
+      const card = cards.find(c => c.id === id);
+      if (!card) return;
+      currentDetailId = id;
+      els.detailTitle.textContent = card.title;
+      els.detailSubtitle.textContent = `Updated ${formatDate(card.updatedAt)}`;
+      els.detailPosition.textContent = card.position || "No stopping point yet.";
+      els.detailProgress.textContent =
+        card.progress === null || card.progress === undefined || card.progress === ""
+          ? "Not set"
+          : `${Number(card.progress)}%`;
+      els.detailTags.textContent = (card.tags && card.tags.length) ? card.tags.join(", ") : "No tags";
+      els.detailNotes.textContent = card.notes || "No notes yet.";
+      els.detailOverlay.classList.add("show");
+      els.detailOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDetail() {
+      els.detailOverlay.classList.remove("show");
+      els.detailOverlay.setAttribute("aria-hidden", "true");
+      currentDetailId = null;
+    }
+
+    function openEditor(id = null) {
+      const card = id ? cards.find(c => c.id === id) : null;
+      els.modalTitle.textContent = card ? "Edit card" : "Add card";
+      els.cardId.value = card ? card.id : "";
+      els.titleInput.value = card?.title || "";
+      els.positionInput.value = card?.position || "";
+      els.notesInput.value = card?.notes || "";
+      els.tagsInput.value = card?.tags?.join(", ") || "";
+      els.progressInput.value = card?.progress ?? "";
+      setProgressHint("Enter a value between 0 and 100");
+      openModal();
+    }
+
+    function deleteCard(id) {
+      const card = cards.find(c => c.id === id);
+      if (!card) return;
+      const ok = confirm(`Delete "${card.title}"?`);
+      if (!ok) return;
+      cards = cards.filter(c => c.id !== id);
+      saveCards();
+      if (currentDetailId === id) closeDetail();
+    }
+
+    function clearAll() {
+      if (!cards.length) return;
+      const ok = confirm("Delete all saved cards? This cannot be undone.");
+      if (!ok) return;
+      cards = [];
+      saveCards();
+      closeDetail();
+      closeModal();
+    }
+
+    els.progressInput.addEventListener("input", () => {
+      const raw = els.progressInput.value.trim();
+
+      if (raw === "") {
+        setProgressHint("Enter a value between 0 and 100");
+        return;
+      }
+
+      const value = Number(raw);
+
+      if (!Number.isFinite(value) || value < 0 || value > 100) {
+        setProgressHint("Must be between 0 and 100", true);
+      } else {
+        setProgressHint("Enter a value between 0 and 100");
+      }
+    });
+
+    els.cardForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const id = els.cardId.value || uid();
+      const title = els.titleInput.value.trim();
+      if (!title) return;
+
+      const progressRaw = els.progressInput.value.trim();
+      let progress = null;
+
+      if (progressRaw !== "") {
+        progress = Number(progressRaw);
+
+        if (!Number.isFinite(progress) || progress < 0 || progress > 100) {
+          setProgressHint("Please enter a number from 0 to 100", true);
+          els.progressInput.focus();
+          return;
+        }
+      }
+
+      const newCard = {
+        id,
+        title,
+        position: els.positionInput.value.trim(),
+        notes: els.notesInput.value.trim(),
+        tags: els.tagsInput.value
+          .split(",")
+          .map(t => t.trim())
+          .filter(Boolean),
+        progress,
+        updatedAt: new Date().toISOString()
+      };
+
+      const index = cards.findIndex(c => c.id === id);
+      if (index >= 0) {
+        cards[index] = { ...cards[index], ...newCard };
+      } else {
+        cards.unshift(newCard);
+      }
+
+      saveCards();
+      closeModal();
+    });
+
+    els.addBtn.addEventListener("click", () => openEditor());
+        els.clearAllBtn.addEventListener("click", clearAll);
+    els.closeModalBtn.addEventListener("click", closeModal);
+    els.cancelBtn.addEventListener("click", closeModal);
+    els.closeDetailBtn.addEventListener("click", closeDetail);
+    els.closeDetailFooterBtn.addEventListener("click", closeDetail);
+
+    els.editFromDetailBtn.addEventListener("click", () => {
+      const id = currentDetailId;
+      closeDetail();
+      if (id) openEditor(id);
+    });
+
+    els.deleteFromDetailBtn.addEventListener("click", () => {
+      const id = currentDetailId;
+      if (!id) return;
+      closeDetail();
+      deleteCard(id);
+    });
+
+    els.searchInput.addEventListener("input", render);
+
+    els.modalOverlay.addEventListener("click", (e) => {
+      if (e.target === els.modalOverlay) closeModal();
+    });
+
+    els.detailOverlay.addEventListener("click", (e) => {
+      if (e.target === els.detailOverlay) closeDetail();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (els.modalOverlay.classList.contains("show")) closeModal();
+        if (els.detailOverlay.classList.contains("show")) closeDetail();
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        els.searchInput.focus();
+      }
+
+      if (e.key === "+" && !els.modalOverlay.classList.contains("show")) {
+        const active = document.activeElement;
+        if (active !== els.searchInput && active.tagName !== "INPUT" && active.tagName !== "TEXTAREA") {
+          e.preventDefault();
+          openEditor();
+        }
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
